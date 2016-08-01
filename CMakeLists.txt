@@ -6,6 +6,7 @@ include( ExternalProject )
 set( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${PROJECT_SOURCE_DIR} )
 
 find_package( Wt REQUIRED )
+find_package( OpenCV REQUIRED )
 
 set( Boost_USE_STATIC_LIBS OFF ) 
 set( Boost_USE_MULTITHREADED ON )  
@@ -83,6 +84,5 @@ set( WT_CONNECTOR "wthttp" CACHE STRING "Connector used (wthttp or wtfcgi)" )
 add_executable( weboldnewphoto ${HEADER_FILES} ${SOURCE_FILES} )
 add_dependencies( weboldnewphoto lib_grayscale_filter_prj )
 
-target_link_libraries( ${PROJECT_NAME} lib_grayscale_filter ${Wt_LIBRARIES} ${Boost_SYSTEM_LIBRARY} ${Boost_LIBRARIES} ${FREEIMAGE_LIBRARIES} )
-
+target_link_libraries( ${PROJECT_NAME} lib_grayscale_filter ${Wt_LIBRARIES} ${OpenCV_LIBS} ${Boost_SYSTEM_LIBRARY} ${Boost_LIBRARIES} ${FREEIMAGE_LIBRARIES} )
 

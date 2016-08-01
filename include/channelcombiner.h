@@ -28,7 +28,7 @@ namespace daw { namespace imaging {
 
 	class ChannelCombiner {
 	public:
-		GenericImage runfilter( const GenericImage& image_y, const GenericImage& image_u, const GenericImage& image_v ) const;
+		GenericImage<rgb3> runfilter( GenericImage<rgb3> const & image_y, GenericImage<rgb3> const & image_u, GenericImage<rgb3> const & image_v ) const;
 	};
 
 }}

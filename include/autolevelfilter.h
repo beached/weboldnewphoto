@@ -27,7 +27,7 @@
 namespace daw { namespace imaging {
 	class AutoLevelFilter {
 	public:
-		GenericImage runfilter( const GenericImage &input_image ) const;
+		GenericImage<rgb3> runfilter( GenericImage<rgb3> const & input_image ) const;
 	};
 }}
 

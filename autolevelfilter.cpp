@@ -37,13 +37,13 @@
 
 namespace daw { namespace imaging {
 
-	GenericImage AutoLevelFilter::runfilter( const GenericImage &input_image ) const {
+	GenericImage<rgb3> AutoLevelFilter::runfilter( GenericImage<rgb3> const & input_image ) const {
 
-		uchar3 min_vals( std::numeric_limits<unsigned char>::max(), std::numeric_limits<unsigned char>::max(), std::numeric_limits<unsigned char>::max() );
-		uchar3 max_vals( std::numeric_limits<unsigned char>::min(), std::numeric_limits<unsigned char>::min(), std::numeric_limits<unsigned char>::min() );
+		rgb3 min_vals( std::numeric_limits<unsigned char>::max(), std::numeric_limits<unsigned char>::max(), std::numeric_limits<unsigned char>::max() );
+		rgb3 max_vals( std::numeric_limits<unsigned char>::min(), std::numeric_limits<unsigned char>::min(), std::numeric_limits<unsigned char>::min() );
 
 		for( size_t n=0; n<input_image.size( ); ++n ) {
-			const uchar3 cur_val = input_image[n];
+			const rgb3 cur_val = input_image[n];
 			if( cur_val.red < min_vals.red ) {
 				min_vals.red = cur_val.red;
 			}
@@ -64,7 +64,7 @@ namespace daw { namespace imaging {
 			}		
 		}
 
-		uchar3 range_vals( max_vals.red-min_vals.red, max_vals.green-min_vals.green, max_vals.blue-min_vals.blue );
+		rgb3 range_vals( max_vals.red-min_vals.red, max_vals.green-min_vals.green, max_vals.blue-min_vals.blue );
 		boost::scoped_array<float> val_mul( new float[3] );
 		nullcheck( val_mul.get( ), "AutoLevelFilter::::runfilter could not allocate float[3] array. Null returned" );
 
@@ -84,7 +84,7 @@ namespace daw { namespace imaging {
 			val_mul[2] = 0.0f;
 		}
 
-		GenericImage output_image( input_image.width( ), input_image.height( ) );
+		GenericImage<rgb3> output_image( input_image.width( ), input_image.height( ) );
 		if( input_image.size( ) != output_image.size( ) ) {
 			const std::string msg = "Input and Output image in autolevel filter are not the same.  This should never happen.";
 			Wt::log( "error" ) << msg;
@@ -93,7 +93,7 @@ namespace daw { namespace imaging {
 
 		//TODO: Reenable OMP #pragma omp parallel for
 		for( size_t n=0; n<input_image.size( ); ++n ) {
-			output_image[n] = uchar3( 0, 0, 0 );
+			output_image[n] = rgb3( 0, 0, 0 );
 			if( range_vals.red > 0 ) {
 				output_image[n].red = (unsigned char)(((float)(input_image[n].red - min_vals.red))*val_mul[0]);
 			}

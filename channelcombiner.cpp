@@ -42,7 +42,7 @@ namespace daw { namespace imaging {
 			return floor( value + 0.5f );
 		}
 
-		const int max( const uchar3 lpd ) {
+		const int max( const rgb3 lpd ) {
 			int ret = lpd.red;
 			if( lpd.green > ret ) {
 				ret = lpd.green;
@@ -99,11 +99,11 @@ namespace daw { namespace imaging {
 			clampvalue( value.B, min, max );
 		}
 
-		const float colform( const uchar3 c, const float R, const float G, const float B ) {
+		const float colform( const rgb3 c, const float R, const float G, const float B ) {
 			return R*(float)c.red + G*(float)c.green + B*(float)c.blue;
 		}
 	}
-	GenericImage ChannelCombiner::runfilter( const GenericImage& image_y, const GenericImage& image_u, const GenericImage& image_v ) const {
+	GenericImage<rgb3> ChannelCombiner::runfilter( GenericImage<rgb3> const & image_y, GenericImage<rgb3> const & image_u, GenericImage<rgb3> const & image_v ) const {
 		if( !((image_y.size( ) == image_v.size( )) && (image_y.size( ) == image_v.size( ))) ) {
 			const std::string msg = "Images are not the same size in channel filter";
 			Wt::log( "error" ) << msg;
@@ -131,7 +131,7 @@ namespace daw { namespace imaging {
 		const int min_all = min3( pd_min );
 		const float range_all = (float)(max_all - min_all);
 
-		GenericImage output_image( image_y.width( ), image_y.height( ) );
+		GenericImage<rgb3> output_image( image_y.width( ), image_y.height( ) );
 
 		//#pragma omp parallel for
 		for( int n=0; n<(int)image_y.size( ); ++n ) {
@@ -140,7 +140,7 @@ namespace daw { namespace imaging {
 			cur_value.G = (int)((float)(output_lpdimg[n].G-pd_min.G)*(255.0f/range_all));
 			cur_value.B = (int)((float)(output_lpdimg[n].B-pd_min.B)*(255.0f/range_all));
 			clampvalue( cur_value, 0, 255 );
-			output_image[n] = uchar3( (unsigned char)cur_value.R, (unsigned char)cur_value.G, (unsigned char)cur_value.B );
+			output_image[n] = rgb3( (unsigned char)cur_value.R, (unsigned char)cur_value.G, (unsigned char)cur_value.B );
 
 		}
 
