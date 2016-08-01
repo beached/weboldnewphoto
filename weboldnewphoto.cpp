@@ -27,8 +27,8 @@
 #include <daw/grayscale_filter/genericimage.h>
 #include <daw/grayscale_filter/filterdawgs.h>
 #include <daw/grayscale_filter/filterdawgscolourize.h>
-#include <helpers.h>
-#include <nullptr.h>
+#include <daw/grayscale_filter/helpers.h>
+#include "nullptr.h"
 
 #include <boost/bind.hpp>
 #include <boost/shared_ptr.hpp>
@@ -61,6 +61,20 @@
 
 namespace daw { namespace imaging {
 	namespace {
+		template<typename T>
+		auto get_repaint_formulas( ) {
+			std::map<T, uint8_t> ret_map;
+			ret_map["Ratio"] = 0;
+			ret_map["YUV"] = 1;
+			ret_map["RGB Multiply 1"] = 2;
+			ret_map["RGB Addition"] = 3;
+			ret_map["RGB Multiply 2"] = 4;
+			ret_map["RGB Multiply 3"] = 5;
+
+			return ret_map;
+		}   
+
+
 		//inline void clearWRaster( Wt::WImage* wimg, Wt::WRasterImage* wraster ) {
 		void clearWRaster( Wt::WImage* wimg, Wt::WRasterImage* wraster ) {
 			// WRaster is null the first time.  Clear it every other time.
@@ -74,7 +88,7 @@ namespace daw { namespace imaging {
 		//inline Wt::WRasterImage* GenericImageToWRaster( const GenericImage<rgb3>& input_image ) {	
 		Wt::WRasterImage* GenericImageToWRaster( const GenericImage<rgb3>& input_image, Wt::WObject* parent ) {
 			
-			Wt::WRasterImage* output_image = new Wt::WRasterImage( "JPG", input_image.width( ), input_image.height( ), parent );
+			auto output_image = new Wt::WRasterImage( "JPG", input_image.width( ), input_image.height( ), parent );
 			
 			
 			nullcheck( output_image, "Could not allocate output_image in GenericImageoWRaster.  Null returned" );
@@ -109,7 +123,7 @@ namespace daw { namespace imaging {
 		useStyleSheet( "weboldnewphoto.css" );
 		setLoadingIndicator( new Wt::WOverlayLoadingIndicator() );
 
-		Wt::WPushButton* wc_button_fileupload = new Wt::WPushButton( "Upload" );
+		auto wc_button_fileupload = new Wt::WPushButton( "Upload" );
 		wc_fileupload = new Wt::WFileUpload( );				
 		wc_fileupload->setFileTextSize( 64 );
 		wc_fileupload->changed().connect( wc_fileupload, &Wt::WFileUpload::upload );
@@ -133,14 +147,11 @@ namespace daw { namespace imaging {
 		wc_button_repaint->clicked().connect( this, &WebOldNewPhoto::repaintGrayscale );
 
 		wc_combo_validrepaintmethods = new Wt::WComboBox( );
-		{			
-			std::map<Wt::WString, int> valid_repaintmethods = FilterDAWGSColourize::get_repaint_formulas<Wt::WString>( );
 
-			for( std::map<Wt::WString, int>::iterator it=valid_repaintmethods.begin( ); it != valid_repaintmethods.end( ); ++it ) {
-				wc_combo_validrepaintmethods->addItem( it->first );
-			}
-			wc_combo_validrepaintmethods->setCurrentIndex( 4 );
+		for( auto v: get_repaint_formulas<Wt::WString>( ) ) {
+			wc_combo_validrepaintmethods->addItem( v.first );
 		}
+		wc_combo_validrepaintmethods->setCurrentIndex( 4 );
 		
 
 		root( )->addWidget( wc_fileupload );		
@@ -169,7 +180,7 @@ namespace daw { namespace imaging {
 
 	void WebOldNewPhoto::repaintGrayscale( ) {
 		wc_button_repaint->disable( );
-		const size_t repaint_method = FilterDAWGSColourize::get_repaint_formulas<Wt::WString>( )[wc_combo_validrepaintmethods->currentText( )];
+		auto repaint_method = get_repaint_formulas<Wt::WString>( )[wc_combo_validrepaintmethods->currentText( )];
 		
 		GenericImage<rgb3> image_recolourized = FilterDAWGSColourize::filter( *image_original, *image_grayscale, repaint_method );
 		clearWRaster( wc_image_recolourized, wc_rasterimage_recolourized );
