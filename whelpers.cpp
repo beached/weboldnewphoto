@@ -23,21 +23,22 @@
 #include <Wt/WColor>
 #include <Wt/WRasterImage>
 
-#include "genericimage.h"
+#include <daw/grayscale_filter/genericimage.h>
+
 #include "itypes.h"
-#include "nullptr.h"
+#include <daw/daw_exception.h>
 #include "whelpers.h"
 
 namespace daw { namespace imaging {
 
-	Wt::WRasterImage* genericImageToWRaster( const GenericImage &input_image ) {
+	Wt::WRasterImage* genericImageToWRaster( GenericImage<rgb3> const & input_image ) {
 
-		Wt::WRasterImage* output_image = new Wt::WRasterImage( "jpeg", input_image.width( ), input_image.height( ) );
-		nullcheck( output_image, "Could not allocate output_image in genericImageToWRaster.  Null returned" );
+		auto output_image = new Wt::WRasterImage( "jpeg", input_image.width( ), input_image.height( ) );
+		daw::exception::daw_throw_on_null( output_image, "Could not allocate output_image in genericImageToWRaster.  Null returned" );
 	
 		for( size_t y=0; y<input_image.height( ); ++y ) {
 			for( size_t x=0; x<input_image.width( ); ++x ) {
-				const uchar3 cur_val = input_image.value( y, x );
+				auto cur_val = input_image( y, x );
 				output_image->setPixel( x, y, Wt::WColor( cur_val.red, cur_val.green, cur_val.blue ) );
 			}
 		}

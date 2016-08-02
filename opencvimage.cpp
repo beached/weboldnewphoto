@@ -27,13 +27,13 @@
 #include <stdexcept>
 #include <string>
 
-#include "nullptr.h"
+#include <daw/daw_exception.h>
 #include "opencvimage.h"
 
 
 namespace daw { namespace imaging {
 	OpenCVImage::OpenCVImage( const int width, const int height, const int depth, const int channels ):_image( cvCreateImage( cvSize( width, height ), depth, channels ) ) {
-		nullcheck( _image, "OpenCVImage::OpenCVImag - Could not create IplImage" );
+		daw::exception::daw_throw_on_null( _image, "OpenCVImage::OpenCVImag - Could not create IplImage" );
 		if( _image->nChannels != 3 ) {
 			const std::string msg =  "OpenCVImage::OpenCVImag - Uploaded image must be in RGB format";
 			std::cerr << msg << std::endl;
@@ -42,7 +42,7 @@ namespace daw { namespace imaging {
 	}
 
 	OpenCVImage::OpenCVImage( const std::string &filename, const int iscolor ):_image( cvLoadImage( filename.c_str( ), iscolor ) ) {
-		nullcheck( _image, "OpenCVImage::OpenCVImag - Could not create IplImage" );
+		daw::exception::daw_throw_on_null( _image, "OpenCVImage::OpenCVImag - Could not create IplImage" );
 		if( _image->nChannels != 3 ) {
 			const std::string msg =  "OpenCVImage::OpenCVImag - Uploaded image must be in RGB format";
 			std::cerr << msg << std::endl;

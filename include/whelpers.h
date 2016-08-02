@@ -26,6 +26,6 @@
 #include <daw/grayscale_filter/genericimage.h>
 
 namespace daw { namespace imaging {
-	Wt::WRasterImage* genericImageToWRaster( const GenericImage &input_image );
+	Wt::WRasterImage* genericImageToWRaster( GenericImage<rgb3> const & input_image );
 }}
 

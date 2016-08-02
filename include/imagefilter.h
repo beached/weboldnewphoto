@@ -23,24 +23,24 @@
 // imagefilter.h
 #pragma once
 
-#include <boost/shared_ptr.hpp>
+#include <memory>
 #include "opencvimage.h"
 
-struct uchar3 {
-	// Must remain blue, green, red to correlate with IplImage format
-	unsigned char blue;
-	unsigned char green;
-	unsigned char red;
-	uchar3( ): blue( 0 ), green( 0 ), red( 0 ) { };
-	uchar3( unsigned char R, unsigned char G, unsigned char B ):  blue( B ), green( G ), red( R ) { };
-	uchar3( const uchar3 &src ): blue( src.blue ), green( src.green ), red( src.red ) { };
-	uchar3 &operator=( const uchar3 &src ) {
-		red = src.red;
-		green = src.green;
-		blue = src.blue;
-		return *this;
-	}
-};
+//struct rgb3 {
+//	// Must remain blue, green, red to correlate with IplImage format
+//	unsigned char blue;
+//	unsigned char green;
+//	unsigned char red;
+//	rgb3( ): blue( 0 ), green( 0 ), red( 0 ) { };
+//	rgb3( unsigned char R, unsigned char G, unsigned char B ):  blue( B ), green( G ), red( R ) { };
+//	rgb3( const uchar3 &src ): blue( src.blue ), green( src.green ), red( src.red ) { };
+//	rgb3 &operator=( const uchar3 &src ) {
+//		red = src.red;
+//		green = src.green;
+//		blue = src.blue;
+//		return *this;
+//	}
+//};
 
 struct double3 {
 	// Must remain blue, green, red to correlate with IplImage format
@@ -62,7 +62,7 @@ namespace daw { namespace imaging {
 
 	class ImageFilter {
 	public:
-		virtual boost::shared_ptr<OpenCVImage> runfilter( boost::shared_ptr<OpenCVImage> input_image ) = 0;
+		virtual std::shared_ptr<OpenCVImage> runfilter( std::shared_ptr<OpenCVImage> input_image ) = 0;
 	protected:
 		~ImageFilter( ) { }
 	};

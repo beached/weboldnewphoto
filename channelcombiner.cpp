@@ -34,15 +34,15 @@
 
 namespace daw { namespace imaging {
 	namespace {
-		float too_gs_small( const float &R, const float &G, const float &B ) {
+		float too_gs_small( float const & R, float const & G, float const & B ) {
 			return 0.299f*R + 0.587f*G + 0.114f*B;
 		}
 
-		float round( const float &value ) {
+		float round( float const & value ) {
 			return floor( value + 0.5f );
 		}
 
-		const int max( const rgb3 lpd ) {
+		uint8_t max( rgb3 lpd ) {
 			int ret = lpd.red;
 			if( lpd.green > ret ) {
 				ret = lpd.green;
@@ -53,37 +53,37 @@ namespace daw { namespace imaging {
 			return ret;
 		}
 
-		const int max3( const int &value1, const int &value2, const int &value3 ) {
-			int maxval = value1;
-			if( value2 > maxval ) {
-				maxval = value2;
+		template<typename T>
+		auto max3( T value1, T const & value2, T const & value3 ) {
+			if( value2 > value1 ) {
+				value1 = value2;
 			}
-			if( value3 > maxval ) {
-				maxval = value3;
+			if( value3 > value1 ) {
+				value1 = value3;
 			}
-			return maxval;
+			return value1;
 		}
 
-		const int max3( const LargePixelData &pd ) {
+		auto max3( LargePixelData const & pd ) {
 			return max3( pd.R, pd.G, pd.B );
 		}
 
-		const int min3( const int &value1, const int &value2, const int &value3 ) {
-			int maxval = value1;
-			if( value2 < maxval ) {
-				maxval = value2;
+		template<typename T>
+		auto min3( T value1, T const & value2, T const & value3 ) {
+			if( value2 < value1 ) {
+				value1 = value2;
 			}
-			if( value3 < maxval ) {
-				maxval = value3;
+			if( value3 < value1 ) {
+				value1 = value3;
 			}
-			return maxval;
+			return value1;
 		}
 
-		const int min3( const LargePixelData &pd ) {
+		auto min3( LargePixelData const & pd ) {
 			return min3( pd.R, pd.G, pd.B );
 		}
 
-		void clampvalue( int &value, const int min, const int max ) {
+		void clampvalue( int &value, int const min, int const max ) {
 			if( value < min ) {
 				Wt::log( "info" ) << "Had to clamp value from from " << value << " to " << min;
 				value = min;
@@ -93,13 +93,13 @@ namespace daw { namespace imaging {
 			}
 		}
 
-		void clampvalue( LargePixelData &value, const int min, const int max ) {
+		void clampvalue( LargePixelData &value, int const min, int const max ) {
 			clampvalue( value.R, min, max );
 			clampvalue( value.G, min, max );
 			clampvalue( value.B, min, max );
 		}
 
-		const float colform( const rgb3 c, const float R, const float G, const float B ) {
+		float colform( const rgb3 c, float const R, float const G, float const B ) {
 			return R*(float)c.red + G*(float)c.green + B*(float)c.blue;
 		}
 	}
@@ -112,9 +112,9 @@ namespace daw { namespace imaging {
 
 		boost::scoped_array<LargePixelData> output_lpdimg( new LargePixelData[image_y.size( )] );	//output_lpdimg
 		for( size_t n=0; n<image_y.size( ); ++n ) {
-			const float Y = (float)image_y[n].red;
-			const float U = (float)image_u[n].red;
-			const float V = (float)image_v[n].red;			
+			float const Y = (float)image_y[n].red;
+			float const U = (float)image_u[n].red;
+			float const V = (float)image_v[n].red;			
 			output_lpdimg[n] = LargePixelData( (int)(Y + 1.14f*V), (int)(Y - 0.395f*U - 0.581f*V), (int)(Y + 2.032f*U) );
 		}
 
@@ -127,11 +127,11 @@ namespace daw { namespace imaging {
 			LargePixelData::max( output_lpdimg[n], pd_max );
 		}
 
-		const int max_all = max3( pd_max );
-		const int min_all = min3( pd_min );
-		const float range_all = (float)(max_all - min_all);
+		auto const max_all = max3( pd_max );
+		auto const min_all = min3( pd_min );
+		auto const range_all = static_cast<float>(max_all - min_all);
 
-		GenericImage<rgb3> output_image( image_y.width( ), image_y.height( ) );
+		GenericImage<rgb3> output_image{ image_y.width( ), image_y.height( ) };
 
 		//#pragma omp parallel for
 		for( int n=0; n<(int)image_y.size( ); ++n ) {

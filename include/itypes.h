@@ -22,22 +22,6 @@
 
 #pragma once
 
-//struct uchar3 {
-//	// Must remain blue, green, red to correlate with IplImage format
-//	unsigned char blue;
-//	unsigned char green;
-//	unsigned char red;
-//	uchar3( ): blue( 0 ), green( 0 ), red( 0 ) { };
-//	uchar3( unsigned char R, unsigned char G, unsigned char B ):  blue( B ), green( G ), red( R ) { };
-//	uchar3( const uchar3 &src ): blue( src.blue ), green( src.green ), red( src.red ) { };
-//	uchar3 &operator=( const uchar3 &src ) {
-//		red = src.red;
-//		green = src.green;
-//		blue = src.blue;
-//		return *this;
-//	}
-//};
-
 struct double3 {
 	// Must remain blue, green, red to correlate with IplImage format
 	double X;

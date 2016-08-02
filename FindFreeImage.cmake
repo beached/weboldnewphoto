@@ -20,17 +20,16 @@ SET(FREEIMAGE_INCLUDE_DIRS)
 SET(FREEIMAGE_LIBRARIES)
 
 IF( DEFINED ENV{FREEIMAGE_ROOT} )
-	MESSAGE( WARNING "Found free image root" )
 	SET( FREEIMAGE_ROOT $ENV{FREEIMAGE_ROOT} )
-ELSE( )
-	MESSAGE( WARNING "FREEIMAGE_ROOT not set" )
 ENDIF( )
 
 SET(SEARCH_PATHS
 	$ENV{ProgramFiles}/freeimage/include
 	$ENV{SystemDrive}/freeimage/include
 	$ENV{ProgramFiles}/freeimage
-	$ENV{SystemDrive}/freeimage
+	$ENV{SystemDrive}/freeimageo
+	/usr
+	/usr/local
 	)
 IF(FREEIMAGE_ROOT)
 	SET(SEARCH_PATHS

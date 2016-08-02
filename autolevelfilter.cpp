@@ -33,10 +33,10 @@
 
 #include "autolevelfilter.h"
 #include "itypes.h"
-#include "nullptr.h"
+#include <daw/daw_exception.h>
 
 namespace daw { namespace imaging {
-
+	
 	GenericImage<rgb3> AutoLevelFilter::runfilter( GenericImage<rgb3> const & input_image ) const {
 
 		rgb3 min_vals( std::numeric_limits<unsigned char>::max(), std::numeric_limits<unsigned char>::max(), std::numeric_limits<unsigned char>::max() );
@@ -66,7 +66,7 @@ namespace daw { namespace imaging {
 
 		rgb3 range_vals( max_vals.red-min_vals.red, max_vals.green-min_vals.green, max_vals.blue-min_vals.blue );
 		boost::scoped_array<float> val_mul( new float[3] );
-		nullcheck( val_mul.get( ), "AutoLevelFilter::::runfilter could not allocate float[3] array. Null returned" );
+		daw::exception::daw_throw_on_null( val_mul.get( ), "AutoLevelFilter::::runfilter could not allocate float[3] array. Null returned" );
 
 		if( range_vals.red > 0 ) {
 			val_mul[0] = 255.0f/(float)range_vals.red;

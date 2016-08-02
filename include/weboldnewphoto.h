@@ -27,7 +27,7 @@
 #include <daw/grayscale_filter/filterdawgs.h>
 #include <daw/grayscale_filter/filterdawgscolourize.h>
 
-#include <boost/shared_ptr.hpp>
+#include <memory>
 #include <Wt/WApplication>
 
 namespace daw { namespace imaging {
@@ -46,8 +46,8 @@ namespace daw { namespace imaging {
 		Wt::WPushButton* wc_button_repaint;
 		Wt::WComboBox* wc_combo_validrepaintmethods;
 
-		boost::shared_ptr<GenericImage<rgb3>> image_original;
-		boost::shared_ptr<GenericImage<rgb3>> image_grayscale;
+		std::shared_ptr<GenericImage<rgb3>> image_original;
+		std::shared_ptr<GenericImage<rgb3>> image_grayscale;
 
 		//WebOldNewPhoto( const WebOldNewPhoto &src );
 		void newUploadCtrl( Wt::WContainerWidget* const parent );

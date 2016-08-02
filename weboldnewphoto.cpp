@@ -28,7 +28,7 @@
 #include <daw/grayscale_filter/filterdawgs.h>
 #include <daw/grayscale_filter/filterdawgscolourize.h>
 #include <daw/grayscale_filter/helpers.h>
-#include "nullptr.h"
+#include <daw/daw_exception.h>
 
 #include <boost/bind.hpp>
 #include <boost/shared_ptr.hpp>
@@ -74,6 +74,7 @@ namespace daw { namespace imaging {
 			return ret_map;
 		}   
 
+		
 
 		//inline void clearWRaster( Wt::WImage* wimg, Wt::WRasterImage* wraster ) {
 		void clearWRaster( Wt::WImage* wimg, Wt::WRasterImage* wraster ) {
@@ -91,7 +92,7 @@ namespace daw { namespace imaging {
 			auto output_image = new Wt::WRasterImage( "JPG", input_image.width( ), input_image.height( ), parent );
 			
 			
-			nullcheck( output_image, "Could not allocate output_image in GenericImageoWRaster.  Null returned" );
+			daw::exception::daw_throw_on_null( output_image, "Could not allocate output_image in GenericImageoWRaster.  Null returned" );
 
 			for( size_t y=0; y<input_image.height( ); ++y ) {
 				for( size_t x=0; x<input_image.width( ); ++x ) {
@@ -110,14 +111,18 @@ namespace daw { namespace imaging {
 			}
 			wraster = GenericImageToWRaster( image, parent );
 			
-			nullcheck( wraster, "wraster returned from cvImgToRaster is null" );			
+			daw::exception::daw_throw_on_null( wraster, "wraster returned from cvImgToRaster is null" );			
 			wimg->setResource( wraster );
 			//wimg->setImageLink( wraster );
 			wimg->refresh( );			
 		}
 	}
 
-	WebOldNewPhoto::WebOldNewPhoto( const Wt::WEnvironment &env ): Wt::WApplication( env ), image_original( new GenericImage<rgb3>( 0, 0 ) ), image_grayscale( new GenericImage<rgb3>( 0, 0 ) ), wc_rasterimage_original( nullptr ) {		
+	WebOldNewPhoto::WebOldNewPhoto( const Wt::WEnvironment &env ): 
+			Wt::WApplication{ env }, 
+			wc_rasterimage_original{ nullptr },		
+			image_original{ new GenericImage<rgb3>{ 0, 0 } }, 
+			image_grayscale{ new GenericImage<rgb3>{ 0, 0 } } {
 
 		setTitle( "DAW Software Development - New Old Photo Web" );
 		useStyleSheet( "weboldnewphoto.css" );
@@ -182,7 +187,7 @@ namespace daw { namespace imaging {
 		wc_button_repaint->disable( );
 		auto repaint_method = get_repaint_formulas<Wt::WString>( )[wc_combo_validrepaintmethods->currentText( )];
 		
-		GenericImage<rgb3> image_recolourized = FilterDAWGSColourize::filter( *image_original, *image_grayscale, repaint_method );
+		auto image_recolourized = FilterDAWGSColourize::filter( *image_original, *image_grayscale, static_cast<FilterDAWGSColourize::repaint_formulas>(repaint_method) );
 		clearWRaster( wc_image_recolourized, wc_rasterimage_recolourized );
 		setWRaster( wc_image_recolourized, wc_rasterimage_recolourized, image_recolourized, root( ) );
 		wc_button_repaint->enable( );
@@ -191,7 +196,7 @@ namespace daw { namespace imaging {
 
 	void WebOldNewPhoto::imageOriginalUploaded( ) {		
 		try {
-			*image_original = GenericImage<rgb3>::fromFile( wc_fileupload->spoolFileName( ) );
+			*image_original = GenericImage<rgb3>::from_file( wc_fileupload->spoolFileName( ) );
 		} catch( const std::exception& ex ) {
 			Wt::log( "error" ) << ex.what( );
 			return;
@@ -213,7 +218,7 @@ namespace daw { namespace imaging {
 	}
 
 	void WebOldNewPhoto::imageClicked( const Wt::WImage* const image ) {
-		nullcheck( image, "image passed to imageClicked is null" );
+		daw::exception::daw_throw_on_null( image, "image passed to imageClicked is null" );
 
 		if( image->styleClass( ) == "imgsmall" ) {
 			((Wt::WWidget*)image)->setStyleClass( "imgfull" );
