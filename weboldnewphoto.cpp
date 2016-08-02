@@ -53,11 +53,8 @@
 #include <Wt/WProgressBar>
 #include <Wt/WPushButton>
 #include <Wt/WRasterImage>
-#include <Wt/WString>
 #include <Wt/WTabWidget>
 #include <Wt/WVirtualImage>
-
-
 
 namespace daw { namespace imaging {
 	namespace {
@@ -180,7 +177,12 @@ namespace daw { namespace imaging {
 
 	void WebOldNewPhoto::imageOriginalUploaded( ) {		
 		try {
-			image_original = std::make_shared<GenericImage<rgb3>>( GenericImage<rgb3>::from_file( wc_fileupload->spoolFileName( ) ) );
+			auto result = GenericImage<rgb3>::from_file( wc_fileupload->spoolFileName( ) );
+			Wt::log( "error" ) << "size: " << result.size( );
+			for( size_t n=0; n<result.size( ); ++n ) {
+				std::cout << result[n].
+			}
+			image_original = std::make_shared<GenericImage<rgb3>>( std::move( result ) );
 		} catch( std::exception const & ex ) {
 			Wt::log( "error" ) << ex.what( );
 			return;
