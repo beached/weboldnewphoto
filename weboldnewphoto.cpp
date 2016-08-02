@@ -74,24 +74,15 @@ namespace daw { namespace imaging {
 			return ret_map;
 		}   
 
-		
-
-		//inline void clearWRaster( Wt::WImage* wimg, Wt::WRasterImage* wraster ) {
-		void clearWRaster( Wt::WImage* wimg, Wt::WRasterImage* wraster ) {
-			// WRaster is null the first time.  Clear it every other time.
+		void clearWRaster( Wt::WImage * wimg, Wt::WRasterImage * wraster ) {
 			if( nullptr != wraster  ) {
 				wimg->setImageLink( Wt::WLink( ) );
-				//wimg->setResource( wraster );
-				//wraster = nullptr;
 			}
 		}
 
-		//inline Wt::WRasterImage* GenericImageToWRaster( const GenericImage<rgb3>& input_image ) {	
-		Wt::WRasterImage* GenericImageToWRaster( GenericImage<rgb3> const & input_image, Wt::WObject* parent ) {
+		Wt::WRasterImage * GenericImageToWRaster( GenericImage<rgb3> const & input_image, Wt::WObject* parent ) {
 			
 			auto output_image = new Wt::WRasterImage( "JPG", input_image.width( ), input_image.height( ), parent );
-			
-			
 			daw::exception::daw_throw_on_null( output_image, "Could not allocate output_image in GenericImageoWRaster.  Null returned" );
 
 			for( size_t y=0; y<input_image.height( ); ++y ) {
@@ -104,8 +95,7 @@ namespace daw { namespace imaging {
 			return output_image;
 		}
 
-		//inline void setWRaster( Wt::WImage* wimg, Wt::WRasterImage* wraster, const GenericImage<rgb3>& image ) {
-		void setWRaster( Wt::WImage* wimg, Wt::WRasterImage* wraster, GenericImage<rgb3> const & image, Wt::WObject* parent ) {
+		void setWRaster( Wt::WImage * wimg, Wt::WRasterImage * wraster, GenericImage<rgb3> const & image, Wt::WObject* parent ) {
 			if( nullptr != wraster ) {
 				parent->removeChild( wraster );
 			}
@@ -113,7 +103,6 @@ namespace daw { namespace imaging {
 			
 			daw::exception::daw_throw_on_null( wraster, "wraster returned from cvImgToRaster is null" );			
 			wimg->setResource( wraster );
-			//wimg->setImageLink( wraster );
 			wimg->refresh( );			
 		}
 	}
@@ -129,6 +118,7 @@ namespace daw { namespace imaging {
 		setLoadingIndicator( new Wt::WOverlayLoadingIndicator() );
 
 		auto wc_button_fileupload = new Wt::WPushButton( "Upload" );
+
 		wc_fileupload = new Wt::WFileUpload( );				
 		wc_fileupload->setFileTextSize( 64 );
 		wc_fileupload->changed().connect( wc_fileupload, &Wt::WFileUpload::upload );
@@ -136,12 +126,6 @@ namespace daw { namespace imaging {
 		wc_fileupload->uploaded().connect( this, &WebOldNewPhoto::imageOriginalUploaded );
 		wc_fileupload->fileTooLarge().connect( this, &WebOldNewPhoto::imageOriginalTooLarge );
 		wc_fileupload->setMargin( 5, Wt::Right);
-// 		{	// TODO: Cannot undo without ruining upload box
-// 			Wt::WProgressBar* progress = new Wt::WProgressBar( );
-// 			progress->setFormat( Wt::WString::Empty );
-// 			progress->setVerticalAlignment( Wt::AlignMiddle );
-// 			wc_fileupload->setProgressBar( progress );
-// 		}
 
 		wc_button_fileupload->clicked().connect( wc_fileupload, &Wt::WFileUpload::upload );
 		wc_button_fileupload->clicked().connect( wc_button_fileupload, &Wt::WPushButton::disable );
@@ -196,7 +180,7 @@ namespace daw { namespace imaging {
 
 	void WebOldNewPhoto::imageOriginalUploaded( ) {		
 		try {
-			*image_original = GenericImage<rgb3>::from_file( wc_fileupload->spoolFileName( ) );
+			image_original = std::make_shared<GenericImage<rgb3>>( GenericImage<rgb3>::from_file( wc_fileupload->spoolFileName( ) ) );
 		} catch( std::exception const & ex ) {
 			Wt::log( "error" ) << ex.what( );
 			return;

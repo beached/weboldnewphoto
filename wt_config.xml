@@ -354,7 +354,7 @@
            still a draft. Wt implements up to version 17 of the draft
 	   (latest as of November 2011).
 	  -->
-	<web-sockets>false</web-sockets>
+	<web-sockets>true</web-sockets>
 
 	<!-- Redirect message shown for browsers without JavaScript support
 
