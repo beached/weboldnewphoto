@@ -32,25 +32,29 @@
 
 
 namespace daw { namespace imaging {
-	OpenCVImage::OpenCVImage( const int width, const int height, const int depth, const int channels ):_image( cvCreateImage( cvSize( width, height ), depth, channels ) ) {
+	OpenCVImage::OpenCVImage( int width, int height, int depth, int channels ):
+			_image( cvCreateImage( cvSize( width, height ), depth, channels ) ) {
+
 		daw::exception::daw_throw_on_null( _image, "OpenCVImage::OpenCVImag - Could not create IplImage" );
 		if( _image->nChannels != 3 ) {
-			const std::string msg =  "OpenCVImage::OpenCVImag - Uploaded image must be in RGB format";
+			static std::string const msg = "OpenCVImage::OpenCVImag - Uploaded image must be in RGB format";
 			std::cerr << msg << std::endl;
 			throw std::runtime_error( msg );
 		}
 	}
 
-	OpenCVImage::OpenCVImage( const std::string &filename, const int iscolor ):_image( cvLoadImage( filename.c_str( ), iscolor ) ) {
+	OpenCVImage::OpenCVImage( std::string const & filename, int iscolor ):_image( cvLoadImage( filename.c_str( ), iscolor ) ) {
 		daw::exception::daw_throw_on_null( _image, "OpenCVImage::OpenCVImag - Could not create IplImage" );
 		if( _image->nChannels != 3 ) {
-			const std::string msg =  "OpenCVImage::OpenCVImag - Uploaded image must be in RGB format";
+			static std::string const msg = "OpenCVImage::OpenCVImag - Uploaded image must be in RGB format";
 			std::cerr << msg << std::endl;
 			throw std::runtime_error( msg );
 		}
 	}
 
-	OpenCVImage::OpenCVImage( const OpenCVImage &src ): _image( nullptr ) {
+	OpenCVImage::OpenCVImage( const OpenCVImage &src ): 
+			_image( nullptr ) {
+
 		cvCopy( src._image, _image, nullptr );
 	}
 
@@ -69,7 +73,7 @@ namespace daw { namespace imaging {
 		}
 	}
 
-	OpenCVImage &OpenCVImage::operator=( const OpenCVImage &src ) {
+	OpenCVImage &OpenCVImage::operator=( OpenCVImage const & src ) {
 		if( nullptr != _image ) {
 			cvReleaseImage( &_image );
 			_image = nullptr;

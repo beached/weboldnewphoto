@@ -87,7 +87,7 @@ namespace daw { namespace imaging {
 		}
 
 		//inline Wt::WRasterImage* GenericImageToWRaster( const GenericImage<rgb3>& input_image ) {	
-		Wt::WRasterImage* GenericImageToWRaster( const GenericImage<rgb3>& input_image, Wt::WObject* parent ) {
+		Wt::WRasterImage* GenericImageToWRaster( GenericImage<rgb3> const & input_image, Wt::WObject* parent ) {
 			
 			auto output_image = new Wt::WRasterImage( "JPG", input_image.width( ), input_image.height( ), parent );
 			
@@ -96,7 +96,7 @@ namespace daw { namespace imaging {
 
 			for( size_t y=0; y<input_image.height( ); ++y ) {
 				for( size_t x=0; x<input_image.width( ); ++x ) {
-					const rgb3 cur_val = input_image( y, x );
+					auto const cur_val = input_image( y, x );
 					output_image->setPixel( x, y, Wt::WColor( cur_val.red, cur_val.green, cur_val.blue ) );
 				}
 			}
@@ -105,7 +105,7 @@ namespace daw { namespace imaging {
 		}
 
 		//inline void setWRaster( Wt::WImage* wimg, Wt::WRasterImage* wraster, const GenericImage<rgb3>& image ) {
-		void setWRaster( Wt::WImage* wimg, Wt::WRasterImage* wraster, const GenericImage<rgb3>& image, Wt::WObject* parent ) {
+		void setWRaster( Wt::WImage* wimg, Wt::WRasterImage* wraster, GenericImage<rgb3> const & image, Wt::WObject* parent ) {
 			if( nullptr != wraster ) {
 				parent->removeChild( wraster );
 			}
@@ -118,7 +118,7 @@ namespace daw { namespace imaging {
 		}
 	}
 
-	WebOldNewPhoto::WebOldNewPhoto( const Wt::WEnvironment &env ): 
+	WebOldNewPhoto::WebOldNewPhoto( Wt::WEnvironment const & env ): 
 			Wt::WApplication{ env }, 
 			wc_rasterimage_original{ nullptr },		
 			image_original{ new GenericImage<rgb3>{ 0, 0 } }, 
@@ -197,7 +197,7 @@ namespace daw { namespace imaging {
 	void WebOldNewPhoto::imageOriginalUploaded( ) {		
 		try {
 			*image_original = GenericImage<rgb3>::from_file( wc_fileupload->spoolFileName( ) );
-		} catch( const std::exception& ex ) {
+		} catch( std::exception const & ex ) {
 			Wt::log( "error" ) << ex.what( );
 			return;
 		}
@@ -217,7 +217,7 @@ namespace daw { namespace imaging {
 		Wt::log( "info" ) << "Image uploaded is larger than maximum allowed";
 	}
 
-	void WebOldNewPhoto::imageClicked( const Wt::WImage* const image ) {
+	void WebOldNewPhoto::imageClicked( Wt::WImage const * const image ) {
 		daw::exception::daw_throw_on_null( image, "image passed to imageClicked is null" );
 
 		if( image->styleClass( ) == "imgsmall" ) {

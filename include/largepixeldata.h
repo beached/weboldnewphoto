@@ -23,18 +23,22 @@
 #pragma once
 //largepixeldata.h
 
+#include <cstdint>
+
 namespace daw { namespace imaging {
-	class LargePixelData {
-	public:
-		int R;
-		int G;
-		int B;
-		LargePixelData( const int red, const int green, const int blue );
-		LargePixelData( );
-		LargePixelData( const LargePixelData &src );
-		LargePixelData &operator=( const LargePixelData &src );
-		static void min( const LargePixelData &value, LargePixelData &cur_min );
-		static void max( const LargePixelData &value, LargePixelData &cur_max );
+	struct LargePixelData {
+		int32_t R;
+		int32_t G;
+		int32_t B;
+
+		LargePixelData( int32_t red = 0, int32_t green = 0, int32_t blue = 0 );
+		LargePixelData( LargePixelData const & ) = default;
+		LargePixelData & operator=( LargePixelData const & ) = default;
+		LargePixelData( LargePixelData && ) = default;
+		LargePixelData & operator=( LargePixelData && ) = default;
+		~LargePixelData( ) = default;
+		static void min( LargePixelData const & value, LargePixelData & cur_min );
+		static void max( LargePixelData const & value, LargePixelData & cur_max );
 	};
 }}
 

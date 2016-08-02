@@ -86,7 +86,7 @@ namespace daw { namespace imaging {
 
 		GenericImage<rgb3> output_image( input_image.width( ), input_image.height( ) );
 		if( input_image.size( ) != output_image.size( ) ) {
-			const std::string msg = "Input and Output image in autolevel filter are not the same.  This should never happen.";
+			static std::string const msg = "Input and Output image in autolevel filter are not the same.  This should never happen.";
 			Wt::log( "error" ) << msg;
 			throw std::runtime_error( msg );
 		}

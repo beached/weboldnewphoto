@@ -28,7 +28,7 @@
 #include <string>
 #include <Wt/WApplication>
 
-Wt::WApplication *createApplication( const Wt::WEnvironment& env ) {
+Wt::WApplication *createApplication( Wt::WEnvironment const & env ) {
 	return new daw::imaging::WebOldNewPhoto( env );
 }
 

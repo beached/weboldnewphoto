@@ -24,16 +24,19 @@
 #include <Wt/WResource>
 #include <Wt/WRasterImage>
 #include <Wt/WVirtualImage>
+#include <cstdint>
 
 #include <daw/grayscale_filter/genericimage.h>
 #include "wgenericvirtualimage.h"
 #include "whelpers.h"
 
 namespace daw { namespace imaging {
-	WGenericVirtualImage::WGenericVirtualImage( const int width, const int height, GenericImage<rgb3> const & generic_image, Wt::WContainerWidget *parent ): Wt::WVirtualImage( width, height, generic_image.width( ), generic_image.height( ), 256, parent ), input_image( generic_image ) {
+	WGenericVirtualImage::WGenericVirtualImage( int width, int height, GenericImage<rgb3> const & generic_image, Wt::WContainerWidget *parent ): Wt::WVirtualImage( width, height, generic_image.width( ), generic_image.height( ), 256, parent ), input_image( generic_image ) {
 		enableDragging( );
 		redrawAll( );		
 	}
+
+	WGenericVirtualImage::~WGenericVirtualImage( ) { }
 
 	Wt::WResource* WGenericVirtualImage::render( int64_t x, int64_t y, int w, int h ) {
 		GenericImage<rgb3> output_image( w, h );
@@ -62,3 +65,4 @@ namespace daw { namespace imaging {
 		return input_image;
 	}
 }}
+

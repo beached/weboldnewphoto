@@ -23,6 +23,7 @@
 #pragma once
 
 #include <Wt/WVirtualImage>
+#include <cstdint>
 
 #include <daw/grayscale_filter/genericimage.h>
 
@@ -34,9 +35,16 @@ namespace daw { namespace imaging {
 
 	class WGenericVirtualImage: public Wt::WVirtualImage {
 	public:
-		WGenericVirtualImage( const int width, const int height, GenericImage<rgb3> const & generic_image = GenericImage<rgb3>( 0, 0 ), Wt::WContainerWidget *parent = nullptr );
+		WGenericVirtualImage( int width, int height, GenericImage<rgb3> const & generic_image = GenericImage<rgb3>( 0, 0 ), Wt::WContainerWidget *parent = nullptr );
 		void genericImage( GenericImage<rgb3> const & src );
 		GenericImage<rgb3> genericImage( ) const;
+
+		WGenericVirtualImage( ) = default;
+		WGenericVirtualImage( WGenericVirtualImage const & ) = default;
+		WGenericVirtualImage( WGenericVirtualImage && ) = default;
+		WGenericVirtualImage & operator=( WGenericVirtualImage const & ) = default;
+		WGenericVirtualImage & operator=( WGenericVirtualImage && ) = default;
+		virtual ~WGenericVirtualImage( );
 	private:
 		GenericImage<rgb3> input_image;
 		virtual Wt::WResource* render( int64_t x, int64_t y, int w, int h );

@@ -23,12 +23,16 @@
 //largepixeldata.cpp
 
 #include "largepixeldata.h"
+#include <cstdint>
 
 namespace daw { namespace imaging {
-	LargePixelData::LargePixelData(const int red, const int green, const int blue): R( red ), G( green ), B( blue ) { }
-	LargePixelData::LargePixelData( ): R( 0 ), G( 0 ), B( 0 ) { }
 
-	void LargePixelData::min( const LargePixelData &value, LargePixelData &cur_min ) {
+	LargePixelData::LargePixelData( int32_t red, int32_t green, int32_t blue ):
+			R( red ),
+			G( green ),
+			B( blue ) { }
+
+	void LargePixelData::min( LargePixelData const & value, LargePixelData & cur_min ) {
 		if ( value.R < cur_min.R ) {
 			cur_min.R = value.R;
 		}
@@ -40,7 +44,7 @@ namespace daw { namespace imaging {
 		}
 	}
 
-	void LargePixelData::max( const LargePixelData &value, LargePixelData &cur_max ) {
+	void LargePixelData::max( LargePixelData const & value, LargePixelData & cur_max ) {
 		if ( value.R > cur_max.R ) {
 			cur_max.R = value.R;
 		}
@@ -52,13 +56,5 @@ namespace daw { namespace imaging {
 		}
 	}
 
-	LargePixelData::LargePixelData( const LargePixelData &src ):R( src.R ), G( src.G ), B( src.B ) { };
-
-	LargePixelData &LargePixelData::operator=( const LargePixelData &src ) {
-		R = src.R;
-		G = src.G;
-		B = src.B;
-		return *this;
-	}
-
 }}
+

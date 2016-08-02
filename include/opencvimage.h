@@ -30,14 +30,14 @@ namespace daw { namespace imaging {
 class OpenCVImage {
 private:
 	IplImage* _image;
-	OpenCVImage &operator=( const OpenCVImage &src );
-	OpenCVImage( const OpenCVImage &src );
+	OpenCVImage &operator=( OpenCVImage const & src );
+	OpenCVImage( OpenCVImage const & src );
 public:
-	OpenCVImage( const int width, const int height, const int depth, const int channels );
-	OpenCVImage( const std::string &filename, const int iscolor = 1 );
+	OpenCVImage( int width, int height, int depth, int channels );
+	OpenCVImage( std::string const & filename, int iscolor = 1 );
 	operator IplImage*( );
 	IplImage* get( );
-	~OpenCVImage( );
+	virtual ~OpenCVImage( );
 };
 
 } }

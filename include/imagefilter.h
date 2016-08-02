@@ -49,13 +49,11 @@ struct double3 {
 	double Z;
 	double3( ): X( 0.0 ), Y( 0.0 ), Z( 0.0 ) { };
 	double3( double x, double y, double z ):  X( x ), Y( y ), Z( z ) { };
-	double3( const double3 &src ): X( src.X ), Y( src.Y ), Z( src.Z ) { };
-	double3 &operator=( const double3 &src ) {
-		X = src.X;
-		Y = src.Y;
-		Z = src.Z;
-		return *this;
-	}
+	double3( double3 const & ) = default;
+	double3 & operator=( double3 const & ) = default;
+	double3( double3 && ) = default;
+	double3 & operator=( double3 && ) = default;
+	~double3( ) = default;
 };
 
 namespace daw { namespace imaging {
@@ -64,7 +62,7 @@ namespace daw { namespace imaging {
 	public:
 		virtual std::shared_ptr<OpenCVImage> runfilter( std::shared_ptr<OpenCVImage> input_image ) = 0;
 	protected:
-		~ImageFilter( ) { }
+		virtual ~ImageFilter( ) { }
 	};
 
 }}
