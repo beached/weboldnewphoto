@@ -21,7 +21,6 @@
 // SOFTWARE.
 
 #pragma once
-//largepixeldata.h
 
 #include <cstdint>
 
@@ -36,7 +35,7 @@ namespace daw { namespace imaging {
 		LargePixelData & operator=( LargePixelData const & ) = default;
 		LargePixelData( LargePixelData && ) = default;
 		LargePixelData & operator=( LargePixelData && ) = default;
-		~LargePixelData( ) = default;
+		~LargePixelData( );
 		static void min( LargePixelData const & value, LargePixelData & cur_min );
 		static void max( LargePixelData const & value, LargePixelData & cur_max );
 	};

@@ -25,9 +25,9 @@ else( )
 	endif( )
 
 	if( ${CMAKE_CXX_COMPILER_ID} STREQUAL "Clang" )
-		add_compile_options(-std=c++14 -stdlib=libc++ -fopenmp -Weverything -Wno-c++98-compat -Wfatal-errors -Wno-covered-switch-default -Wno-padded -Wno-exit-time-destructors -Wno-c++98-compat-pedantic -Wno-unused-parameter -Wno-missing-noreturn -Wno-missing-prototypes -Wno-disabled-macro-expansion)		
+		add_compile_options(-std=c++14 -g -stdlib=libc++ -fopenmp -Weverything -Wno-c++98-compat -Wfatal-errors -Wno-covered-switch-default -Wno-padded -Wno-exit-time-destructors -Wno-c++98-compat-pedantic -Wno-unused-parameter -Wno-missing-noreturn -Wno-missing-prototypes -Wno-disabled-macro-expansion)		
 	elseif( ${CMAKE_CXX_COMPILER_ID} STREQUAL "GNU" )
-		add_compile_options( -std=c++14 -Wall -fopenmp -Wno-deprecated-declarations )
+		add_compile_options( -std=c++14 -g -Wall -fopenmp -Wno-deprecated-declarations )
 	endif( )
 
 endif( )

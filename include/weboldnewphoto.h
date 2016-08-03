@@ -32,9 +32,6 @@
 
 namespace daw { namespace imaging {
 	class WebOldNewPhoto: public Wt::WApplication {
-	public:
-		WebOldNewPhoto( Wt::WEnvironment const & env );
-	//public:
 		Wt::WFileUpload* wc_fileupload;
 		Wt::WImage* wc_image_original;
 		Wt::WImage* wc_image_grayscale;
@@ -46,8 +43,10 @@ namespace daw { namespace imaging {
 		Wt::WPushButton* wc_button_repaint;
 		Wt::WComboBox* wc_combo_validrepaintmethods;
 
-		std::shared_ptr<GenericImage<rgb3>> image_original;
-		std::shared_ptr<GenericImage<rgb3>> image_grayscale;
+		GenericImage<rgb3> image_original;
+		GenericImage<rgb3> image_grayscale;
+	public:
+		WebOldNewPhoto( Wt::WEnvironment const & env );
 
 		//WebOldNewPhoto( WebOldNewPhoto const & src );
 		void newUploadCtrl( Wt::WContainerWidget * const parent );
@@ -56,6 +55,7 @@ namespace daw { namespace imaging {
 		void imageClicked( Wt::WImage const * const image );
 		void repaintGrayscale( );
 		//WebOldNewPhoto &operator=( WebOldNewPhoto const & src );
+		virtual ~WebOldNewPhoto( );
 	};
 } }
 

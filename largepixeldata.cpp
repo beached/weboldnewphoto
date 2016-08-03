@@ -26,6 +26,7 @@
 #include <cstdint>
 
 namespace daw { namespace imaging {
+	LargePixelData::~LargePixelData( ) { }
 
 	LargePixelData::LargePixelData( int32_t red, int32_t green, int32_t blue ):
 			R( red ),

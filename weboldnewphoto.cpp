@@ -22,7 +22,6 @@
 
 //newoldphoto.cpp
 
-#include "weboldnewphoto.h"
 #include <daw/grayscale_filter/genericrgb.h>
 #include <daw/grayscale_filter/genericimage.h>
 #include <daw/grayscale_filter/filterdawgs.h>
@@ -56,6 +55,8 @@
 #include <Wt/WTabWidget>
 #include <Wt/WVirtualImage>
 
+#include "weboldnewphoto.h"
+
 namespace daw { namespace imaging {
 	namespace {
 		template<typename T>
@@ -85,10 +86,11 @@ namespace daw { namespace imaging {
 			for( size_t y=0; y<input_image.height( ); ++y ) {
 				for( size_t x=0; x<input_image.width( ); ++x ) {
 					auto const cur_val = input_image( y, x );
-					output_image->setPixel( x, y, Wt::WColor( cur_val.red, cur_val.green, cur_val.blue ) );
+					auto colour = Wt::WColor( cur_val.red, cur_val.green, cur_val.blue );
+					output_image->setPixel( x, y, std::move( colour ) );
 				}
 			}
-			
+			auto const & t = *output_image;
 			return output_image;
 		}
 
@@ -97,9 +99,11 @@ namespace daw { namespace imaging {
 				parent->removeChild( wraster );
 			}
 			wraster = GenericImageToWRaster( image, parent );
-			
-			daw::exception::daw_throw_on_null( wraster, "wraster returned from cvImgToRaster is null" );			
-			wimg->setResource( wraster );
+			daw::exception::daw_throw_on_null( wraster, "wraster returned from cvImgToRaster is null" );
+			Wt::WLink lnk( wraster );
+			Wt::log( "error" ) << "url:" << lnk.url( );
+		//	wimg->setResource( wraster );
+			wimg->setImageLink( lnk );
 			wimg->refresh( );			
 		}
 	}
@@ -107,8 +111,8 @@ namespace daw { namespace imaging {
 	WebOldNewPhoto::WebOldNewPhoto( Wt::WEnvironment const & env ): 
 			Wt::WApplication{ env }, 
 			wc_rasterimage_original{ nullptr },		
-			image_original{ new GenericImage<rgb3>{ 0, 0 } }, 
-			image_grayscale{ new GenericImage<rgb3>{ 0, 0 } } {
+			image_original{ 0, 0 },
+			image_grayscale{ 0, 0 } {
 
 		setTitle( "DAW Software Development - New Old Photo Web" );
 		useStyleSheet( "weboldnewphoto.css" );
@@ -164,11 +168,13 @@ namespace daw { namespace imaging {
 		//wc_tabs_images->addTab( wc_image_recolourized, "Colourized Image", Wt::WTabWidget::PreLoading );
 	}
 
+	WebOldNewPhoto::~WebOldNewPhoto( ) { }
+
 	void WebOldNewPhoto::repaintGrayscale( ) {
 		wc_button_repaint->disable( );
 		auto repaint_method = get_repaint_formulas<Wt::WString>( )[wc_combo_validrepaintmethods->currentText( )];
 		
-		auto image_recolourized = FilterDAWGSColourize::filter( *image_original, *image_grayscale, static_cast<FilterDAWGSColourize::repaint_formulas>(repaint_method) );
+		auto image_recolourized = FilterDAWGSColourize::filter( image_original, image_grayscale, static_cast<FilterDAWGSColourize::repaint_formulas>(repaint_method) );
 		clearWRaster( wc_image_recolourized, wc_rasterimage_recolourized );
 		setWRaster( wc_image_recolourized, wc_rasterimage_recolourized, image_recolourized, root( ) );
 		wc_button_repaint->enable( );
@@ -177,17 +183,17 @@ namespace daw { namespace imaging {
 
 	void WebOldNewPhoto::imageOriginalUploaded( ) {		
 		try {
-			image_original = std::make_shared<GenericImage<rgb3>>( GenericImage<rgb3>::from_file( wc_fileupload->spoolFileName( ) ) );
+			image_original = GenericImage<rgb3>::from_file( wc_fileupload->spoolFileName( ) );
 		} catch( std::exception const & ex ) {
 			Wt::log( "error" ) << ex.what( );
 			return;
 		}
 		clearWRaster( wc_image_original, wc_rasterimage_original );
-		setWRaster( wc_image_original, wc_rasterimage_original, *image_original, root( ) );
+		setWRaster( wc_image_original, wc_rasterimage_original, image_original, root( ) );
 		
-		//*image_grayscale = FilterDAWGS::filter( *image_original );
+		//image_grayscale = FilterDAWGS::filter( image_original );
 		//clearWRaster( wc_image_grayscale, wc_rasterimage_grayscale );
-		//setWRaster( wc_image_grayscale, wc_rasterimage_grayscale, *image_grayscale );		
+		//setWRaster( wc_image_grayscale, wc_rasterimage_grayscale, image_grayscale );
 		//wc_tabs_images->setCurrentIndex( 1 );
 
 		//wc_button_repaint->enable( );
@@ -208,4 +214,5 @@ namespace daw { namespace imaging {
 		}
 		refresh();
 	}
-} }
+
+	} }
