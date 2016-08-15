@@ -37,6 +37,7 @@ namespace daw { namespace imaging {
 		Wt::WImage* wc_image_grayscale;
 		Wt::WImage* wc_image_recolourized;
 		Wt::WRasterImage* wc_rasterimage_original;
+		Wt::WLink* wc_link_original;
 		Wt::WRasterImage* wc_rasterimage_grayscale;
 		Wt::WRasterImage* wc_rasterimage_recolourized;
 		Wt::WTabWidget*	wc_tabs_images;

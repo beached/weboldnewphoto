@@ -80,7 +80,7 @@ namespace daw { namespace imaging {
 
 		Wt::WRasterImage * GenericImageToWRaster( GenericImage<rgb3> const & input_image, Wt::WObject* parent ) {
 			
-			auto output_image = new Wt::WRasterImage( "JPG", input_image.width( ), input_image.height( ), parent );
+			auto output_image = new Wt::WRasterImage( "jpeg", input_image.width( ), input_image.height( ), parent );
 			daw::exception::daw_throw_on_null( output_image, "Could not allocate output_image in GenericImageoWRaster.  Null returned" );
 
 			for( size_t y=0; y<input_image.height( ); ++y ) {
@@ -90,21 +90,22 @@ namespace daw { namespace imaging {
 					output_image->setPixel( x, y, std::move( colour ) );
 				}
 			}
-			auto const & t = *output_image;
 			return output_image;
 		}
 
-		void setWRaster( Wt::WImage * wimg, Wt::WRasterImage * wraster, GenericImage<rgb3> const & image, Wt::WObject * parent ) {
+		void setWRaster( Wt::WImage * wimg, Wt::WLink * lnk, Wt::WRasterImage * wraster, GenericImage<rgb3> const & image, Wt::WObject * parent ) {
 			if( nullptr != wraster ) {
 				parent->removeChild( wraster );
+				if( nullptr != wraster ) {
+					delete wraster;
+					wraster = nullptr;
+				}
 			}
 			wraster = GenericImageToWRaster( image, parent );
 			daw::exception::daw_throw_on_null( wraster, "wraster returned from cvImgToRaster is null" );
-			Wt::WLink lnk( wraster );
-			Wt::log( "error" ) << "url:" << lnk.url( );
-		//	wimg->setResource( wraster );
-			wimg->setImageLink( lnk );
-			wimg->refresh( );			
+			lnk = new Wt::WLink( wraster );
+			wimg->setImageLink( *lnk );
+			wimg->refresh( );
 		}
 	}
 
@@ -176,7 +177,7 @@ namespace daw { namespace imaging {
 		
 		auto image_recolourized = FilterDAWGSColourize::filter( image_original, image_grayscale, static_cast<FilterDAWGSColourize::repaint_formulas>(repaint_method) );
 		clearWRaster( wc_image_recolourized, wc_rasterimage_recolourized );
-		setWRaster( wc_image_recolourized, wc_rasterimage_recolourized, image_recolourized, root( ) );
+		setWRaster( wc_image_recolourized, nullptr, wc_rasterimage_recolourized, image_recolourized, root( ) );	// TODO fix
 		wc_button_repaint->enable( );
 		wc_tabs_images->setCurrentIndex( 2 );
 	}
@@ -189,7 +190,7 @@ namespace daw { namespace imaging {
 			return;
 		}
 		clearWRaster( wc_image_original, wc_rasterimage_original );
-		setWRaster( wc_image_original, wc_rasterimage_original, image_original, root( ) );
+		setWRaster( wc_image_original, wc_link_original, wc_rasterimage_original, image_original, root( ) );
 		
 		//image_grayscale = FilterDAWGS::filter( image_original );
 		//clearWRaster( wc_image_grayscale, wc_rasterimage_grayscale );

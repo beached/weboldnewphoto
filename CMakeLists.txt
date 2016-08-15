@@ -6,7 +6,6 @@ include( ExternalProject )
 set( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${PROJECT_SOURCE_DIR} )
 
 find_package( Wt REQUIRED )
-#find_package( OpenCV REQUIRED )
 
 set( Boost_USE_STATIC_LIBS OFF ) 
 set( Boost_USE_MULTITHREADED ON )  
@@ -39,8 +38,6 @@ externalproject_add(
 	SOURCE_DIR "${CMAKE_BINARY_DIR}/dependencies/lib_grayscale_filter"
 	INSTALL_DIR "${CMAKE_BINARY_DIR}/install"
 	CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${CMAKE_BINARY_DIR}/install
-	PATCH_COMMAND ""
-	TEST_COMMAND ""
 )
 
 externalproject_add( 
@@ -50,8 +47,6 @@ externalproject_add(
 	SOURCE_DIR "${CMAKE_BINARY_DIR}/dependencies/header_libraries"
 	INSTALL_DIR "${CMAKE_BINARY_DIR}/install"
 	CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${CMAKE_BINARY_DIR}/install
-	PATCH_COMMAND ""
-	TEST_COMMAND ""
 )
 
 include_directories( SYSTEM "${CMAKE_BINARY_DIR}/install/include" )
@@ -92,8 +87,7 @@ set( SOURCE_FILES
 set( WT_CONNECTOR "wthttp" CACHE STRING "Connector used (wthttp or wtfcgi)" )
 
 add_executable( weboldnewphoto ${HEADER_FILES} ${SOURCE_FILES} )
-add_dependencies( weboldnewphoto lib_grayscale_filter_prj )
+add_dependencies( weboldnewphoto header_libraries_prj lib_grayscale_filter_prj )
 
-#target_link_libraries( ${PROJECT_NAME} grayscale_filter ${Wt_LIBRARIES} ${OpenCV_LIBS} ${Boost_SYSTEM_LIBRARY} ${Boost_LIBRARIES} ${FREEIMAGE_LIBRARIES} )
 target_link_libraries( ${PROJECT_NAME} grayscale_filter ${Wt_LIBRARIES} ${Boost_SYSTEM_LIBRARY} ${Boost_LIBRARIES} ${FREEIMAGE_LIBRARIES} )
 
